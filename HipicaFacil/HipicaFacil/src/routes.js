@@ -6,7 +6,7 @@ import Agenda from './Pages/Agenda';
 import Cavalos from './Pages/Cavalos';
 import Clientes from './Pages/Clientes';
 import Estoque from './Pages/Estoque';
-import Estoque from './Pages/Financas';
+import Financas from './Pages/Financas';
 
 import {Entypo, AntDesign, MaterialCommunityIcons, FontAwesome5, Ionicons} from '@expo/vector-icons'
 
