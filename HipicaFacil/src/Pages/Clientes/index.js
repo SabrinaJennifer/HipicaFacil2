@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const Clientes = () => {
@@ -29,7 +30,7 @@ const Clientes = () => {
   
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.label}>Nome:</Text>
       <TextInput
         style={styles.input}
@@ -68,7 +69,7 @@ const Clientes = () => {
       />
 
       <Button title="Cadastrar" onPress={handleSubmit} />
-    </View>
+    </SafeAreaView>
   );
 };
 
