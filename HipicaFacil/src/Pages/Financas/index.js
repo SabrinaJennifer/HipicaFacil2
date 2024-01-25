@@ -1,78 +1,126 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import Modal from 'react-native-modal';
-import { Table, Row, Rows } from 'react-native-table-component';
+import { Modal, View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { DataTable } from 'react-native-paper';
 
-const CadastroClientesScreen = () => {
-  const [isModalVisible, setModalVisible] = useState(false);
+const CadastroModal = ({ visible, onClose }) => {
   const [nome, setNome] = useState('');
-  const [endereco, setEndereco] = useState('');
-  const [telefone, setTelefone] = useState('');
-  const [clientes, setClientes] = useState([]);
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
+  const handleCadastro = () => {
+    // Lógica para processar o cadastro
+    console.log('Nome:', nome);
+
+    // Fechar o modal após o cadastro
+    onClose();
   };
 
-  const handleCadastrar = () => {
-    // Validar os campos antes de salvar
-    if (nome && endereco && telefone) {
-      const novoCliente = { nome, endereco, telefone };
-      setClientes([...clientes, novoCliente]);
-      toggleModal();
-      // Você pode adicionar lógica de persistência aqui (por exemplo, salvar em um banco de dados)
-    }
-  };
+  const DataTable = () => (
+    <DataTable.Row>
+      <DataTableCell> Receita/Despesa</DataTableCell>
+    </DataTable.Row>
+  )
 
   return (
-    <View style={styles.container}>
-      <Button title="Cadastrar Cliente" onPress={toggleModal} />
-
-      <Modal isVisible={isModalVisible}>
-        <View style={styles.modalContainer}>
-          <Text>Formulário de Cadastro</Text>
-
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={onClose}
+    >
+      
+      <View style={styles.modalContainer}>
+        <View style={styles.formContainer}>
+        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <Text style={styles.closeButtonText}>X</Text>
+          </TouchableOpacity>
+          <Text style={styles.title}>Cadastro</Text>
           <TextInput
             style={styles.input}
-            placeholder="Nome"
+            placeholder="Despesa/Receita"
             value={nome}
-            onChangeText={(text) => setNome(text)}
+            onChangeText={setNome}
           />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Endereço"
-            value={endereco}
-            onChangeText={(text) => setEndereco(text)}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Telefone"
-            value={telefone}
-            onChangeText={(text) => setTelefone(text)}
-          />
-
-          <Button title="Cadastrar" onPress={handleCadastrar} />
-          <Button title="Fechar" onPress={toggleModal} />
+          <Button title="Cadastrar" onPress={handleCadastro} />
         </View>
-      </Modal>
+      </View>
+    </Modal>
+  );
+};
 
-      <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
-        <Row data={['Nome', 'Endereço', 'Telefone']} style={styles.head} textStyle={styles.text} />
-        <Rows data={clientes.map((cliente) => Object.values(cliente))} textStyle={styles.text} />
-      </Table>
-    </View>
+const BotaoModal = ({ onPress }) => {
+  return (
+    <TouchableOpacity style={styles.button} onPress={onPress}>
+      <Text style={styles.buttonText}>Cadastrar</Text>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
-  modalContainer: { backgroundColor: 'white', padding: 22, borderRadius: 4, borderColor: 'rgba(0, 0, 0, 0.1)' },
-  input: { height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 16, paddingHorizontal: 8, width: '100%' },
-  head: { height: 40,lineHeight:80, backgroundColor: '#f1f8ff' },
-  text: { margin: 6 },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  formContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  closeButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    padding: 10,
+    zIndex: 1,
+  },
 });
 
-export default CadastroClientesScreen;
+export default function () {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  return (
+    <View style={styles.container}>
+      <BotaoModal onPress={handleOpenModal} />
+      <CadastroModal visible={modalVisible} onClose={handleCloseModal} />
+    </View>
+  );
+}
+
+
 
