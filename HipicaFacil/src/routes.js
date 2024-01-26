@@ -28,7 +28,7 @@ export default function Routes(){
         }}
         >
         <Tab.Screen
-        name="Financas"
+        name="Finanças"
         component={Financas}
         options={{tabBarIcon: ({size, color})=>(<FontAwesome5 name="credit-card" size={size} color={color} />
         )

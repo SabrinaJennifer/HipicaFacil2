@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
-import { DataTable } from 'react-native-paper';
 
 const CadastroModal = ({ visible, onClose }) => {
   const [nome, setNome] = useState('');
@@ -12,12 +11,6 @@ const CadastroModal = ({ visible, onClose }) => {
     // Fechar o modal após o cadastro
     onClose();
   };
-
-  const DataTable = () => (
-    <DataTable.Row>
-      <DataTableCell> Receita/Despesa</DataTableCell>
-    </DataTable.Row>
-  )
 
   return (
     <Modal
@@ -49,7 +42,7 @@ const CadastroModal = ({ visible, onClose }) => {
 const BotaoModal = ({ onPress }) => {
   return (
     <TouchableOpacity style={styles.button} onPress={onPress}>
-      <Text style={styles.buttonText}>Cadastrar</Text>
+      <Text style={styles.buttonText}>+Cadastrar</Text>
     </TouchableOpacity>
   );
 };
@@ -65,7 +58,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: '50%',
   },
   title: {
     fontSize: 20,
@@ -83,6 +76,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#007BFF',
     padding: 10,
     borderRadius: 5,
+    marginBottom: '30',
+    width: '200px',
+    marginTop: '20px',
   },
   buttonText: {
     color: 'white',
@@ -101,6 +97,11 @@ const styles = StyleSheet.create({
     padding: 10,
     zIndex: 1,
   },
+  buttonCadastro:{
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginRight: '20px',
+  }
 });
 
 export default function () {
@@ -116,7 +117,9 @@ export default function () {
 
   return (
     <View style={styles.container}>
+      <div style={styles.buttonCadastro}>
       <BotaoModal onPress={handleOpenModal} />
+      </div>
       <CadastroModal visible={modalVisible} onClose={handleCloseModal} />
     </View>
   );
