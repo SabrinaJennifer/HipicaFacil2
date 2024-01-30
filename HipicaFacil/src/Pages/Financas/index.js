@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { Modal, View, Text, TextInput, Button, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 
-const CadastroModal = ({ visible, onClose }) => {
+const CadastroModal = ({ visible, onClose, onSave }) => {
   const [nome, setNome] = useState('');
-
-  const handleCadastro = () => {
     // Lógica para processar o cadastro
-    console.log('Nome:', nome);
-
+    const handleCadastro = () => {
+      onSave({ nome });
     // Fechar o modal após o cadastro
     onClose();
   };
@@ -19,7 +17,6 @@ const CadastroModal = ({ visible, onClose }) => {
       transparent={true}
       onRequestClose={onClose}
     >
-      
       <View style={styles.modalContainer}>
         <View style={styles.formContainer}>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
@@ -28,7 +25,7 @@ const CadastroModal = ({ visible, onClose }) => {
           <Text style={styles.title}>Cadastro</Text>
           <TextInput
             style={styles.input}
-            placeholder="Despesa/Receita"
+            placeholder="ReceitaDespesa"
             value={nome}
             onChangeText={setNome}
           />
@@ -36,6 +33,7 @@ const CadastroModal = ({ visible, onClose }) => {
         </View>
       </View>
     </Modal>
+    
   );
 };
 
@@ -46,6 +44,43 @@ const BotaoModal = ({ onPress }) => {
     </TouchableOpacity>
   );
 };
+
+const DataTable = ({ data }) => (
+  <View>
+    {data.map((item, index) => (
+      <View key={index} style={styles.row}>
+        <Text style={styles.cell}>{item.nome}</Text>
+      </View>
+    ))}
+  </View>
+);
+
+export default function App() {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [cadastros, setCadastros] = useState([]);
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  const handleSaveCadastro = (cadastro) => {
+    setCadastros([...cadastros, cadastro]);
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.buttonCadastro}>
+        <BotaoModal onPress={handleOpenModal} />
+      </View>
+      <CadastroModal visible={modalVisible} onClose={handleCloseModal} onSave={handleSaveCadastro} />
+      <DataTable data={cadastros} />
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   modalContainer: {
@@ -76,9 +111,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#007BFF',
     padding: 10,
     borderRadius: 5,
-    marginBottom: '30',
-    width: '200px',
-    marginTop: '20px',
+    marginBottom: 30,
+    width: 200,
+    marginTop: 20,
   },
   buttonText: {
     color: 'white',
@@ -98,32 +133,20 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   buttonCadastro:{
-    display: 'flex',
+    flex: 1,
     justifyContent: 'flex-end',
-    marginRight: '20px',
-  }
+    marginLeft: 30,
+  },
+  row: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  cell: {
+    flex: 1,
+    padding: 10,
+  },
 });
-
-export default function () {
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const handleOpenModal = () => {
-    setModalVisible(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalVisible(false);
-  };
-
-  return (
-    <View style={styles.container}>
-      <div style={styles.buttonCadastro}>
-      <BotaoModal onPress={handleOpenModal} />
-      </div>
-      <CadastroModal visible={modalVisible} onClose={handleCloseModal} />
-    </View>
-  );
-}
 
 
 
