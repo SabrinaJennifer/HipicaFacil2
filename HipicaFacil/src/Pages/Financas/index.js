@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { Modal, View, Text, TextInput, Button, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 
-const CadastroModal = ({ visible, onClose }) => {
+const CadastroModal = ({ visible, onClose, onSave }) => {
   const [nome, setNome] = useState('');
 
   const handleCadastro = () => {
-    // Lógica para processar o cadastro
-    console.log('Nome:', nome);
-
-    // Fechar o modal após o cadastro
+    onSave({ nome });
     onClose();
   };
 
@@ -19,16 +16,15 @@ const CadastroModal = ({ visible, onClose }) => {
       transparent={true}
       onRequestClose={onClose}
     >
-      
       <View style={styles.modalContainer}>
         <View style={styles.formContainer}>
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Text style={styles.closeButtonText}>X</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Cadastro</Text>
           <TextInput
             style={styles.input}
-            placeholder="Despesa/Receita"
+            placeholder="ReceitaDespesa"
             value={nome}
             onChangeText={setNome}
           />
@@ -42,10 +38,51 @@ const CadastroModal = ({ visible, onClose }) => {
 const BotaoModal = ({ onPress }) => {
   return (
     <TouchableOpacity style={styles.button} onPress={onPress}>
-      <Text style={styles.buttonText}>+Cadastrar</Text>
+      <Text style={styles.buttonText}>+ Cadastrar</Text>
     </TouchableOpacity>
   );
 };
+
+const DataTable = ({ data }) => {
+  return (
+    <FlatList
+      data={data}
+      renderItem={({ item }) => (
+        <View style={styles.item}>
+          <Text>{item.nome}</Text>
+        </View>
+      )}
+      keyExtractor={(item, index) => index.toString()}
+    />
+  );
+};
+
+export default function App() {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [cadastros, setCadastros] = useState([]);
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  const handleSaveCadastro = (cadastro) => {
+    setCadastros([...cadastros, cadastro]);
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.buttonCadastro}>
+        <BotaoModal onPress={handleOpenModal} />
+      </View>
+      <CadastroModal visible={modalVisible} onClose={handleCloseModal} onSave={handleSaveCadastro} />
+      <DataTable data={cadastros} />
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   modalContainer: {
@@ -58,7 +95,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
-    width: '50%',
+    width: '80%',
   },
   title: {
     fontSize: 20,
@@ -76,9 +113,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#007BFF',
     padding: 10,
     borderRadius: 5,
-    marginBottom: '30',
-    width: '200px',
-    marginTop: '20px',
+    marginBottom: 30,
+    width: 200,
+    marginTop: 20,
   },
   buttonText: {
     color: 'white',
@@ -97,33 +134,20 @@ const styles = StyleSheet.create({
     padding: 10,
     zIndex: 1,
   },
-  buttonCadastro:{
+  buttonCadastro: {
     display: 'flex',
     justifyContent: 'flex-end',
-    marginRight: '20px',
-  }
+    marginRight: 20,
+  },
+  item: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
 });
 
-export default function () {
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const handleOpenModal = () => {
-    setModalVisible(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalVisible(false);
-  };
-
-  return (
-    <View style={styles.container}>
-      <div style={styles.buttonCadastro}>
-      <BotaoModal onPress={handleOpenModal} />
-      </div>
-      <CadastroModal visible={modalVisible} onClose={handleCloseModal} />
-    </View>
-  );
-}
 
 
 
