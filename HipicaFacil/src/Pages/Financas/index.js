@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+    fontWeight: 'bold',
   },
   button: {
     backgroundColor: '#007BFF',
@@ -131,13 +132,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
-    padding: 10,
+    marginLeft: 30,
     zIndex: 1,
   },
   buttonCadastro: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    marginRight: 20,
+   alignSelf:'flex-end',
+   marginRight: 20,
   },
   item: {
     flexDirection: 'row',
@@ -145,9 +145,11 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    backgroundColor: 'rgba(50, 115, 220, 0.3)',
   },
 });
 
+  
 
 
 
