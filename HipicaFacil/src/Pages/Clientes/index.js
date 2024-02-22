@@ -1,92 +1,164 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Modal } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { View, Text, Button, Modal, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 
 const Clientes = () => {
-  const [clientForm, setClientForm] = useState({
-    nome: '',
-    endereco: '',
-    telefone: '',
-    email: '',
-    nomeCavalo: ''
-  })
-  const [nome, setNome] = useState('');
-  const [endereco, setEndereco] = useState('');
-  const [telefone, setTelefone] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [clients, setClients] = useState([]);
+  const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
+  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [nomeCavalo, setNomeCavalo] = useState('');
+  const [horseName, setHorseName] = useState('');
 
-  const handleSubmit = () => {
-    // Aqui você pode enviar os dados para o backend ou fazer o que for necessário
-    console.log('Dados do formulário:', { nome, endereco, telefone, email, nomeCavalo });
-    // Limpar os campos após o envio
-    setNome('');
-    setEndereco('');
-    setTelefone('');
-    setEmail('');
-    setNomeCavalo('');
+  const handleSave = () => {
+    if (validateInputs()) {
+      setClients([...clients, { name, address, phone, email, horseName }]);
+      setName('');
+      setAddress('');
+      setPhone('');
+      setEmail('');
+      setHorseName('');
+      setModalVisible(false);
+    } else {
+      alert('Por favor, preencha todos os campos corretamente.');
+    }
   };
-  
+
+  const validateInputs = () => {
+    const phoneRegex = /^\d+$/;
+    return name && address && phone && email && horseName && phoneRegex.test(phone);
+  };
+
+  const renderItem = ({ item }) => (
+    <View style={styles.item}>
+      <View>
+        <Text>Nome: {item.name}</Text>
+        <Text>Endereço: {item.address}</Text>
+        <Text>Telefone: {item.phone}</Text>
+        <Text>Email: {item.email}</Text>
+        <Text>Nome do cavalo: {item.horseName}</Text>
+      </View>
+    </View>
+  );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.label}>Nome:</Text>
-      <TextInput
-        style={styles.input}
-        value={nome}
-        onChangeText={(text) => setNome(text)}
+    <View style={styles.container}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TextInput
+              style={styles.input}
+              placeholder="Nome"
+              value={name}
+              onChangeText={setName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Endereço"
+              value={address}
+              onChangeText={setAddress}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Telefone"
+              value={phone}
+              onChangeText={setPhone}
+              keyboardType="numeric"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Nome do cavalo"
+              value={horseName}
+              onChangeText={setHorseName}
+            />
+            <View style={styles.buttonsContainer}>
+              <Button title="Cancelar" onPress={() => setModalVisible(false)} color="gray" />
+              <Button title="Salvar" onPress={handleSave} />
+            </View>
+          </View>
+        </View>
+      </Modal>
+      <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
+        <Text style={styles.buttonText}>Adicionar Cliente</Text>
+      </TouchableOpacity>
+      <FlatList
+        data={clients}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
       />
-
-      <Text style={styles.label}>Endereço:</Text>
-      <TextInput
-        style={styles.input}
-        value={endereco}
-        onChangeText={(text) => setEndereco(text)}
-      />
-
-      <Text style={styles.label}>Telefone:</Text>
-      <TextInput
-        style={styles.input}
-        value={telefone}
-        onChangeText={(text) => setTelefone(text)}
-        keyboardType="phone-pad"
-      />
-
-      <Text style={styles.label}>E-mail:</Text>
-      <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        keyboardType="email-address"
-      />
-
-      <Text style={styles.label}>Nome do Cavalo Utilizado:</Text>
-      <TextInput
-        style={styles.input}
-        value={nomeCavalo}
-        onChangeText={(text) => setNomeCavalo(text)}
-      />
-
-      <Button title="Cadastrar" onPress={handleSubmit} />
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    flex: 1,
+    marginTop: 50,
+    paddingHorizontal: 20,
   },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   input: {
     height: 40,
+    width: '100%',
+    marginBottom: 20,
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 16,
-    paddingHorizontal: 8,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  button: {
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 30,
+    width: 200,
+    alignSelf: 'flex-end'
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  item: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 10,
+    padding: 10,
   },
 });
 
